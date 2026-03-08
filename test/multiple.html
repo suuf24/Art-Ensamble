@@ -1,1044 +1,983 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Let's Learn Music - English for Kids</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Music Quiz - English for Kids</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
+        /* Modern Reset & Base Styles */
         :root {
-            --bg-primary: #FFF9E8;
-            --bg-secondary: #FFE4C9;
+            --primary-bg: #FFF9E8;
+            --glass-bg: #FFFFFF;
+            --glass-border: #E8DCC8;
+            --text-color: #2D3436;
             --accent-orange: #FF7B54;
             --accent-yellow: #FFB347;
             --accent-green: #7DCFB6;
             --accent-blue: #00B4D8;
             --accent-pink: #FF6B9D;
             --accent-purple: #9B5DE5;
-            --text-dark: #2D3436;
-            --text-light: #636E72;
-            --card-bg: #FFFFFF;
-            --border-color: #E8DCC8;
+            --correct-color: #7DCFB6;
+            --wrong-color: #FF6B9D;
+            --button-hover: #FFF0DB;
+
+            /* Fluid Typography Variables (MAXIMIZED FOR TV) */
+            --fs-title: clamp(1.8rem, 4vh, 3rem);
+            --fs-question: clamp(1.4rem, 4vh, 4rem);
+            --fs-option: clamp(1.1rem, 2.5vh, 2.2rem);
+            --fs-nav: clamp(1rem, 1.5vh, 1.2rem);
         }
 
         * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
             font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, var(--primary-bg) 0%, #FFE4C9 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--text-color);
+            overflow-x: hidden;
+            padding: 20px;
         }
 
         h1, h2, h3, .title-font {
             font-family: 'Fredoka', sans-serif;
         }
 
-        body {
-            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
-            min-height: 100vh;
-            color: var(--text-dark);
-        }
-
-        .hero-section {
-            background: linear-gradient(180deg, #FFE4C9 0%, #FFF9E8 100%);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .hero-section::before {
-            content: '';
+        /* Animated Background Shapes */
+        .background-shapes div {
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-image: 
-                radial-gradient(circle at 20% 80%, rgba(255, 123, 84, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 80% 20%, rgba(0, 180, 216, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 50% 50%, rgba(155, 93, 229, 0.05) 0%, transparent 70%);
-            pointer-events: none;
+            border-radius: 50%;
+            animation: float 20s infinite linear;
+            z-index: -1;
+            opacity: 0.4;
         }
 
-        .floating-note {
-            position: absolute;
-            animation: float 4s ease-in-out infinite;
-            opacity: 0.6;
-            font-size: 2rem;
+        .shape1 {
+            width: 300px;
+            height: 300px;
+            top: -100px;
+            left: -100px;
+            background: radial-gradient(circle, var(--accent-yellow) 0%, transparent 70%);
+        }
+
+        .shape2 {
+            width: 200px;
+            height: 200px;
+            bottom: -50px;
+            right: -50px;
+            background: radial-gradient(circle, var(--accent-green) 0%, transparent 70%);
+            animation-delay: -5s !important;
+        }
+
+        .shape3 {
+            width: 150px;
+            height: 150px;
+            top: 40%;
+            left: 80%;
+            background: radial-gradient(circle, var(--accent-pink) 0%, transparent 70%);
+            animation-delay: -10s !important;
         }
 
         @keyframes float {
-            0%, 100% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-20px) rotate(10deg); }
+            0% { transform: translate(0, 0) rotate(0deg); }
+            50% { transform: translate(50px, 50px) rotate(180deg); }
+            100% { transform: translate(0, 0) rotate(360deg); }
         }
 
-        .note-1 { top: 10%; left: 5%; animation-delay: 0s; }
-        .note-2 { top: 30%; right: 8%; animation-delay: 0.5s; }
-        .note-3 { top: 60%; left: 3%; animation-delay: 1s; }
-        .note-4 { top: 80%; right: 5%; animation-delay: 1.5s; }
-
-        .card {
-            background: var(--card-bg);
-            border-radius: 20px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.08);
-            border: 2px solid var(--border-color);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 40px rgba(0,0,0,0.12);
-        }
-
-        .nav-tab {
-            background: var(--card-bg);
-            border: 2px solid var(--border-color);
-            border-radius: 50px;
-            padding: 12px 24px;
-            cursor: pointer;
+        /* Glassmorphism Container */
+        .quiz-container {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 2px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 40px;
+            width: 100%;
+            max-width: 800px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
             transition: all 0.3s ease;
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .progress-container {
+            width: 100%;
+            height: 10px;
+            background: #E8DCC8;
+            border-radius: 50px;
+            overflow: hidden;
+            margin-top: 15px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--accent-orange), var(--accent-yellow));
+            transition: width 0.3s ease;
+            border-radius: 50px;
+        }
+
+        h1 {
+            font-size: var(--fs-title);
+            margin-bottom: 10px;
+            color: var(--accent-orange);
+            text-shadow: 2px 2px 0px rgba(255, 123, 84, 0.2);
+            line-height: 1.2;
+        }
+
+        /* Question Section */
+        .question-text {
+            font-size: var(--fs-question);
+            margin-bottom: 30px;
+            line-height: 1.4;
             font-weight: 600;
+            color: var(--text-color);
+            text-align: center;
         }
 
-        .nav-tab:hover {
-            background: var(--accent-yellow);
-            border-color: var(--accent-orange);
+        /* Options Grid */
+        .options-grid {
+            display: grid;
+            gap: 15px;
         }
 
-        .nav-tab.active {
-            background: var(--accent-orange);
-            color: white;
-            border-color: var(--accent-orange);
-        }
-
-        .piano-key {
-            background: linear-gradient(180deg, #FFFFFF 0%, #F5F5F5 100%);
-            border: 2px solid #DDD;
-            border-radius: 0 0 8px 8px;
-            cursor: pointer;
-            transition: all 0.15s ease;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-
-        .piano-key:hover {
-            background: linear-gradient(180deg, #FFF9E8 0%, #FFE4C9 100%);
-            transform: translateY(2px);
-        }
-
-        .piano-key:active, .piano-key.pressed {
-            transform: translateY(4px);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            background: linear-gradient(180deg, var(--accent-yellow) 0%, var(--accent-orange) 100%);
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, var(--accent-orange) 0%, var(--accent-yellow) 100%);
-            color: white;
-            border-radius: 50px;
-            padding: 14px 32px;
-            font-weight: 700;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 16px rgba(255, 123, 84, 0.3);
-            display: inline-block;
-            text-decoration: none;
-            font-size: 1.2rem;
-            border: none;
-            cursor: pointer;
-        }
-
-        .btn-primary:hover {
-            transform: scale(1.05);
-            box-shadow: 0 6px 20px rgba(255, 123, 84, 0.4);
-        }
-
-        .btn-secondary {
-            background: linear-gradient(135deg, var(--accent-green) 0%, var(--accent-blue) 100%);
-            color: white;
-            border-radius: 50px;
-            padding: 10px 20px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            border: none;
-            cursor: pointer;
-        }
-
-        .btn-secondary:hover {
-            transform: scale(1.05);
-        }
-
-        .highlight-box {
-            background: linear-gradient(135deg, rgba(255, 179, 71, 0.2) 0%, rgba(255, 123, 84, 0.2) 100%);
-            border-left: 4px solid var(--accent-orange);
-            border-radius: 0 12px 12px 0;
-            padding: 16px 20px;
-        }
-
-        .tempo-btn {
-            background: var(--card-bg);
-            border: 3px solid var(--border-color);
+        .option-btn {
+            background: #FFFFFF;
+            border: 3px solid var(--glass-border);
+            padding: 18px 24px;
             border-radius: 16px;
-            padding: 20px;
+            color: var(--text-color);
+            text-align: left;
+            font-size: var(--fs-option);
             cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .tempo-btn:hover {
-            border-color: var(--accent-blue);
-            transform: scale(1.02);
-        }
-
-        .tempo-btn.active {
-            border-color: var(--accent-orange);
-            background: linear-gradient(135deg, rgba(255, 179, 71, 0.1) 0%, rgba(255, 123, 84, 0.1) 100%);
-        }
-
-        .instrument-card {
-            background: var(--card-bg);
-            border: 2px solid var(--border-color);
-            border-radius: 20px;
-            padding: 24px;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .instrument-card:hover {
-            border-color: var(--accent-green);
-            transform: translateY(-4px);
-        }
-
-        .section-enter {
-            animation: slideIn 0.5s ease forwards;
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .stagger-1 { animation-delay: 0.1s; opacity: 0; }
-        .stagger-2 { animation-delay: 0.2s; opacity: 0; }
-        .stagger-3 { animation-delay: 0.3s; opacity: 0; }
-        .stagger-4 { animation-delay: 0.4s; opacity: 0; }
-
-        .song-card {
-            background: linear-gradient(135deg, #FFFFFF 0%, #FFF9E8 100%);
-            border: 2px solid var(--border-color);
-            border-radius: 16px;
-            padding: 20px;
-            transition: all 0.3s ease;
-        }
-
-        .song-card:hover {
-            border-color: var(--accent-pink);
-            transform: scale(1.02);
-        }
-
-        .visual-wave {
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+            outline: none;
             display: flex;
             align-items: center;
-            gap: 4px;
-            height: 40px;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 600;
         }
 
-        .wave-bar {
-            width: 6px;
-            background: var(--accent-orange);
-            border-radius: 3px;
-            animation: wave 1s ease-in-out infinite;
+        .option-btn:hover {
+            background: var(--button-hover);
+            border-color: var(--accent-orange);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(255, 123, 84, 0.15);
         }
 
-        .wave-bar:nth-child(1) { animation-delay: 0s; height: 20px; }
-        .wave-bar:nth-child(2) { animation-delay: 0.1s; height: 30px; }
-        .wave-bar:nth-child(3) { animation-delay: 0.2s; height: 20px; }
-        .wave-bar:nth-child(4) { animation-delay: 0.3s; height: 35px; }
-        .wave-bar:nth-child(5) { animation-delay: 0.4s; height: 25px; }
-
-        @keyframes wave {
-            0%, 100% { transform: scaleY(1); }
-            50% { transform: scaleY(0.5); }
+        .option-btn.selected {
+            background: linear-gradient(135deg, var(--accent-orange), var(--accent-yellow));
+            color: white;
+            border-color: var(--accent-orange);
+            transform: scale(1.02);
+            box-shadow: 0 4px 15px rgba(255, 123, 84, 0.3);
         }
 
-        .content-section {
+        .option-btn.selected:hover {
+            background: linear-gradient(135deg, var(--accent-orange), var(--accent-yellow));
+        }
+
+        /* Navigation Buttons */
+        .controls {
+            margin-top: 30px;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, var(--accent-orange), var(--accent-yellow));
+            color: white;
+            border: none;
+            padding: 14px 35px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 123, 84, 0.3);
+            font-family: 'Fredoka', sans-serif;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 123, 84, 0.4);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Result Modal / Overlay */
+        .result-overlay {
             display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(135deg, var(--primary-bg) 0%, #FFE4C9 100%);
+            z-index: 9999;
+            overflow-y: auto;
+            padding: 40px;
+            box-sizing: border-box;
+            animation: fadeIn 0.3s ease;
         }
 
-        .content-section.active {
-            display: block;
+        .result-content {
+            max-width: 700px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .score-circle {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-orange), var(--accent-yellow));
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 4rem;
+            font-weight: bold;
+            margin: 20px auto;
+            box-shadow: 0 15px 40px rgba(255, 123, 84, 0.3);
+            color: white;
+            font-family: 'Fredoka', sans-serif;
+        }
+
+        .score-text {
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+            color: var(--text-color);
+        }
+
+        /* Review List */
+        .review-list {
+            text-align: left;
+            max-height: 350px;
+            overflow-y: auto;
+            margin-top: 20px;
+            padding-right: 10px;
+        }
+
+        .review-list::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .review-list::-webkit-scrollbar-track {
+            background: rgba(232, 220, 200, 0.5);
+            border-radius: 50px;
+        }
+
+        .review-list::-webkit-scrollbar-thumb {
+            background: var(--accent-orange);
+            border-radius: 50px;
+        }
+
+        .review-item {
+            background: white;
+            border: 2px solid var(--glass-border);
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            border-left: 5px solid transparent;
+        }
+
+        .review-item.correct {
+            border-left-color: var(--correct-color);
+            background: rgba(125, 207, 182, 0.1);
+        }
+
+        .review-item.wrong {
+            border-left-color: var(--wrong-color);
+            background: rgba(255, 107, 157, 0.1);
+        }
+
+        .review-q {
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--text-color);
+        }
+
+        .review-ans {
+            font-size: 0.95rem;
+            opacity: 0.9;
+        }
+
+        .review-ans span {
+            font-weight: bold;
+        }
+
+        .text-correct {
+            color: var(--correct-color);
+        }
+
+        .text-wrong {
+            color: var(--wrong-color);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes zoomIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* Review Modal Styles */
+        .review-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(135deg, var(--primary-bg) 0%, #FFE4C9 100%);
+            z-index: 10000;
+            padding: 20px;
+            box-sizing: border-box;
+            overflow-y: auto;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--glass-border);
+        }
+
+        .review-header h2 {
+            margin: 0;
+            font-size: 1.8rem;
+            color: var(--accent-orange);
+        }
+
+        .close-review-btn {
+            background: white;
+            border: 2px solid var(--glass-border);
+            font-size: 2rem;
+            line-height: 1;
+            cursor: pointer;
+            color: var(--text-color);
+            padding: 5px 15px;
+            border-radius: 12px;
+            transition: all 0.2s;
+        }
+
+        .close-review-btn:hover {
+            background: var(--wrong-color);
+            color: white;
+            border-color: var(--wrong-color);
+        }
+
+        /* Navigation Grid */
+        .nav-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+        .nav-box {
+            background: white;
+            border: 2px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 700;
+            color: var(--text-color);
+            font-family: 'Fredoka', sans-serif;
+        }
+
+        .nav-box:hover {
+            background: var(--button-hover);
+            border-color: var(--accent-orange);
+        }
+
+        .nav-box.active {
+            border-color: var(--accent-orange);
+            background: var(--accent-orange);
+            color: white;
+            box-shadow: 0 4px 10px rgba(255, 123, 84, 0.3);
+            transform: scale(1.05);
+        }
+
+        .nav-box.answered {
+            background: var(--accent-green);
+            color: #fff;
+            border-color: var(--accent-green);
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 600px) {
+            .quiz-container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .question-text {
+                font-size: 1.2rem;
+            }
+
+            .option-btn {
+                padding: 12px 16px;
+                font-size: 1rem;
+            }
+            
+            .score-circle {
+                width: 120px;
+                height: 120px;
+                font-size: 2.5rem;
+            }
+        }
+
+        /* Footer */
+        .app-footer {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid var(--glass-border);
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .social-icon {
+            color: var(--text-color);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: white;
+            text-decoration: none;
+            border: 2px solid var(--glass-border);
+        }
+
+        .social-icon svg {
+            width: 22px;
+            height: 22px;
+            fill: currentColor;
+        }
+
+        .social-icon:hover {
+            transform: translateY(-3px);
+            background: white;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border-color: var(--accent-orange);
+            color: var(--accent-orange);
+        }
+
+        /* --- DESKTOP LAYOUT (TV / CLASSROOM MODE > 1024px) --- */
+        @media (min-width: 1024px) {
+            body {
+                padding: 0;
+                overflow: hidden;
+            }
+
+            .quiz-container {
+                width: 100vw;
+                height: 100vh;
+                max-width: none;
+                border: none;
+                border-radius: 0;
+                padding: 40px 60px;
+                display: grid;
+                grid-template-rows: auto 1fr auto;
+                gap: 20px;
+                align-items: center;
+                backdrop-filter: none;
+                background: rgba(255, 255, 255, 0.95);
+            }
+
+            header {
+                grid-row: 1 / 2;
+                margin-bottom: 0;
+            }
+
+            h1 {
+                font-size: clamp(2rem, 4vh, 3.5rem);
+                margin-bottom: 10px;
+                text-align: left;
+            }
+
+            .progress-container {
+                height: 14px;
+                margin-top: 20px;
+            }
+
+            #quiz-area {
+                grid-row: 2 / 3;
+                width: 100%;
+                max-width: 1000px;
+                margin: 0 auto;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                height: 100%;
+                padding-top: 3vh;
+            }
+
+            .question-text {
+                font-size: clamp(2rem, 5vh, 4.5rem);
+                margin-bottom: 4vh;
+                font-weight: 700;
+            }
+
+            .options-grid {
+                display: grid;
+                gap: 20px;
+                width: 85%;
+                margin: 0 auto;
+            }
+
+            .option-btn {
+                font-size: clamp(1.5rem, 3vh, 2.5rem);
+                padding: 2vh 3vw;
+                border-width: 3px;
+                text-align: center;
+                justify-content: center;
+            }
+
+            .sidebar-wrapper {
+                grid-row: 3 / 4;
+                display: grid;
+                grid-template-columns: 1fr auto;
+                gap: 30px;
+                align-items: center;
+                padding-top: 20px;
+                border-top: 2px solid var(--glass-border);
+            }
+
+            #game-nav {
+                grid-template-columns: repeat(10, 1fr);
+                gap: 10px;
+            }
+
+            .nav-box {
+                font-size: 1.2rem;
+                padding: 12px;
+                border-radius: 12px;
+            }
+
+            .controls {
+                min-width: 200px;
+            }
+
+            .btn {
+                font-size: 1.4rem;
+                padding: 16px 45px;
+            }
+
+            .background-shapes,
+            .app-footer {
+                display: none;
+            }
+        }
+
+        /* --- MOBILE/TABLET TWEAKS --- */
+        @media (max-width: 1023px) {
+            h1 { font-size: 1.6rem; }
+            .question-text { font-size: 1.3rem; margin-bottom: 20px; }
+            .option-btn { font-size: 1.1rem; padding: 14px; }
+            .nav-box { font-size: 0.9rem; padding: 8px; }
+
+            .sidebar-wrapper { display: contents; }
+            #game-nav { order: 2; margin-top: 25px; }
+            .controls { order: 3; justify-content: center; }
+            .btn { width: 100%; max-width: 400px; font-size: 1.1rem; }
+
+            .result-overlay { padding: 20px; align-items: flex-start; }
+            .result-content { padding-top: 20px; padding-bottom: 50px; }
+            .score-circle { width: 120px; height: 120px; font-size: 2.5rem; margin: 10px auto; }
+            .result-content h2 { font-size: 1.8rem !important; margin-bottom: 15px !important; }
+            .score-text { font-size: 1.1rem; margin-bottom: 20px; }
         }
     </style>
 </head>
+
 <body>
-    <!-- Hero Section -->
-    <section class="hero-section py-8 px-4 md:py-12">
-        <div class="floating-note note-1">♪</div>
-        <div class="floating-note note-2">♫</div>
-        <div class="floating-note note-3">♬</div>
-        <div class="floating-note note-4">♩</div>
-        
-        <div class="max-w-6xl mx-auto text-center relative z-10">
-            <h1 class="text-4xl md:text-6xl font-bold mb-4 title-font" style="color: var(--accent-orange);">
-                Let's Learn Music!
-            </h1>
-            <p class="text-xl md:text-2xl mb-6" style="color: var(--text-light);">
-                We use music to express our feelings.
+
+    <!-- Background Animation -->
+    <div class="background-shapes">
+        <div class="shape1"></div>
+        <div class="shape2"></div>
+        <div class="shape3"></div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="quiz-container">
+
+        <header id="game-header">
+            <h1>Music Quiz</h1>
+            <div class="progress-container">
+                <div class="progress-bar" id="progress-bar"></div>
+            </div>
+        </header>
+
+        <div id="quiz-area">
+            <!-- Questions will be injected here by JS -->
+        </div>
+
+        <div class="sidebar-wrapper">
+            <div id="game-nav" class="nav-grid"></div>
+            <div class="controls" id="game-controls"></div>
+        </div>
+
+        <div id="result-trigger" class="results-section" style="display: none;">
+            <h2>Quiz Complete!</h2>
+            <button class="btn" style="font-size: 1.5rem; padding: 20px 50px;" onclick="app.revealResults()">
+                See Your Score
+            </button>
+        </div>
+
+        <footer class="app-footer">
+            <a href="https://www.instagram.com/suuf24/" target="_blank" class="social-icon social-instagram" title="Instagram">
+                <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+            </a>
+            <a href="https://github.com/suuf24" target="_blank" class="social-icon social-github" title="GitHub">
+                <svg viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+            </a>
+            <a href="https://wa.me/6285103974297" target="_blank" class="social-icon social-whatsapp" title="WhatsApp">
+                <svg viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.017-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+            </a>
+        </footer>
+    </div>
+
+    <!-- Real Result Modal -->
+    <div id="result-overlay" class="result-overlay">
+        <div class="result-content">
+            <h2 style="font-size: 2.5rem; margin-bottom: 20px; color: var(--accent-orange);" class="title-font">Your Result</h2>
+            <div class="score-circle" id="final-score">0</div>
+            <p class="score-text" id="status-message">Great Job!</p>
+
+            <p style="margin-bottom: 30px; color: #636e72; font-size: 1.1rem;">
+                Your answers have been checked.
             </p>
-            <div class="highlight-box inline-block mb-8">
-                <p class="text-lg font-semibold">
-                    Music makes us happy! Music makes us sad!
-                </p>
+
+            <div style="display: flex; gap: 15px; justify-content: center; margin-bottom: 30px; flex-wrap: wrap;">
+                <button class="btn" onclick="app.init()">Play Again</button>
             </div>
-            
-            <!-- Visual Audio Wave -->
-            <div class="flex justify-center mb-8">
-                <div class="visual-wave">
-                    <div class="wave-bar"></div>
-                    <div class="wave-bar"></div>
-                    <div class="wave-bar"></div>
-                    <div class="wave-bar"></div>
-                    <div class="wave-bar"></div>
-                </div>
+
+            <div id="detail-btn-container"></div>
+        </div>
+    </div>
+
+    <!-- Review Detail Modal -->
+    <div id="review-modal" class="review-overlay">
+        <div class="result-content" style="text-align: left; max-width: 800px; margin: 0 auto;">
+            <div class="review-header">
+                <h2 class="title-font">Answer Details</h2>
+                <button class="close-review-btn" onclick="app.closeReview()">&times;</button>
+            </div>
+            <div id="review-list-content" class="review-list" style="max-height: none;"></div>
+            <div style="text-align: center; margin-top: 30px; margin-bottom: 50px;">
+                <button class="btn" onclick="app.closeReview()">Close</button>
             </div>
         </div>
-    </section>
-
-    <!-- Navigation -->
-    <nav class="sticky top-0 z-50 py-4 px-4" style="background: rgba(255,249,232,0.95); backdrop-filter: blur(10px);">
-        <div class="max-w-6xl mx-auto">
-            <div class="flex flex-wrap gap-2 justify-center">
-                <button class="nav-tab active" onclick="showSection('elements')">Elements</button>
-                <button class="nav-tab" onclick="showSection('notes')">Notes</button>
-                <button class="nav-tab" onclick="showSection('tempo')">Tempo</button>
-                <button class="nav-tab" onclick="showSection('songs')">Songs</button>
-                <button class="nav-tab" onclick="showSection('instruments')">Instruments</button>
-                <button class="nav-tab" onclick="showSection('quiz')">Quiz</button>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Main Content -->
-    <main class="max-w-6xl mx-auto px-4 py-8">
-        
-        <!-- Section 1: Music Elements -->
-        <section id="elements" class="content-section active">
-            <div class="text-center mb-8">
-                <h2 class="text-3xl md:text-4xl font-bold title-font mb-4" style="color: var(--accent-orange);">
-                    Music Elements
-                </h2>
-                <p class="text-lg">Every song has three main elements.</p>
-            </div>
-
-            <div class="grid md:grid-cols-3 gap-6">
-                <!-- Notes -->
-                <div class="card p-6 section-enter stagger-1">
-                    <div class="text-center mb-4">
-                        <div class="w-16 h-16 rounded-full mx-auto flex items-center justify-center text-3xl" style="background: linear-gradient(135deg, var(--accent-yellow) 0%, var(--accent-orange) 100%);">
-                            ♪
-                        </div>
-                    </div>
-                    <h3 class="text-xl font-bold text-center mb-3 title-font" style="color: var(--accent-orange);">
-                        Notes (Nada)
-                    </h3>
-                    <p class="text-center mb-4">
-                        A <strong>note</strong> is a sound. Notes make a pattern.
-                    </p>
-                    <div class="highlight-box">
-                        <p class="text-sm">
-                            <strong>Example:</strong> Do, Re, Mi, Fa, Sol, La, Si, Do
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Rhythm -->
-                <div class="card p-6 section-enter stagger-2">
-                    <div class="text-center mb-4">
-                        <div class="w-16 h-16 rounded-full mx-auto flex items-center justify-center text-3xl" style="background: linear-gradient(135deg, var(--accent-green) 0%, var(--accent-blue) 100%);">
-                            ♫
-                        </div>
-                    </div>
-                    <h3 class="text-xl font-bold text-center mb-3 title-font" style="color: var(--accent-blue);">
-                        Rhythm (Irama)
-                    </h3>
-                    <p class="text-center mb-4">
-                        <strong>Rhythm</strong> is a repeating pattern of sounds.
-                    </p>
-                    <div class="highlight-box">
-                        <p class="text-sm">
-                            <strong>Example:</strong> Clap your hands! Clap, clap, clap!
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Melody -->
-                <div class="card p-6 section-enter stagger-3">
-                    <div class="text-center mb-4">
-                        <div class="w-16 h-16 rounded-full mx-auto flex items-center justify-center text-3xl" style="background: linear-gradient(135deg, var(--accent-pink) 0%, var(--accent-purple) 100%);">
-                            ♬
-                        </div>
-                    </div>
-                    <h3 class="text-xl font-bold text-center mb-3 title-font" style="color: var(--accent-purple);">
-                        Melody (Melodi)
-                    </h3>
-                    <p class="text-center mb-4">
-                        <strong>Melody</strong> is a line of high and low notes.
-                    </p>
-                    <div class="highlight-box">
-                        <p class="text-sm">
-                            <strong>Example:</strong> We sing the melody of a song.
-                        </p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Interactive Clap Game -->
-            <div class="card p-6 mt-8">
-                <h3 class="text-2xl font-bold text-center mb-4 title-font" style="color: var(--accent-orange);">
-                    Let's Clap a Rhythm!
-                </h3>
-                <p class="text-center mb-6">Click the button and clap your hands!</p>
-                <div class="flex justify-center gap-4 mb-6">
-                    <button class="btn-primary" onclick="playRhythm()">Play Rhythm</button>
-                </div>
-                <div id="rhythmDisplay" class="flex justify-center gap-2 text-4xl">
-                    <span id="clap1">👏</span>
-                    <span id="clap2">👏</span>
-                    <span id="clap3">👏</span>
-                    <span id="clap4">👏</span>
-                </div>
-            </div>
-        </section>
-
-        <!-- Section 2: Notes -->
-        <section id="notes" class="content-section">
-            <div class="text-center mb-8">
-                <h2 class="text-3xl md:text-4xl font-bold title-font mb-4" style="color: var(--accent-orange);">
-                    Types of Notes
-                </h2>
-                <p class="text-lg">There are three types of notes in songs.</p>
-            </div>
-
-            <!-- Diatonic Notes -->
-            <div class="card p-6 mb-6">
-                <h3 class="text-2xl font-bold mb-4 title-font" style="color: var(--accent-orange);">
-                    1. Diatonic Notes
-                </h3>
-                <p class="mb-4">
-                    <strong>Diatonic notes</strong> are common in many songs. They use the scale: Do-Re-Mi-Fa-Sol-La-Si-Do.
-                </p>
-                
-                <div class="grid md:grid-cols-2 gap-4 mb-4">
-                    <div class="highlight-box">
-                        <p><strong>Major notes</strong> sound happy and bright!</p>
-                    </div>
-                    <div class="highlight-box">
-                        <p><strong>Minor notes</strong> sound sad and serious.</p>
-                    </div>
-                </div>
-
-                <!-- Interactive Piano -->
-                <h4 class="text-xl font-bold mb-4 title-font">Play the Notes!</h4>
-                <div class="flex justify-center gap-1 mb-4 overflow-x-auto pb-4">
-                    <button class="piano-key w-12 h-32 md:w-16 md:h-40 flex flex-col justify-end items-center pb-2" onclick="playNote(261.63, 'Do')">
-                        <span class="font-bold text-sm">Do</span>
-                    </button>
-                    <button class="piano-key w-12 h-32 md:w-16 md:h-40 flex flex-col justify-end items-center pb-2" onclick="playNote(293.66, 'Re')">
-                        <span class="font-bold text-sm">Re</span>
-                    </button>
-                    <button class="piano-key w-12 h-32 md:w-16 md:h-40 flex flex-col justify-end items-center pb-2" onclick="playNote(329.63, 'Mi')">
-                        <span class="font-bold text-sm">Mi</span>
-                    </button>
-                    <button class="piano-key w-12 h-32 md:w-16 md:h-40 flex flex-col justify-end items-center pb-2" onclick="playNote(349.23, 'Fa')">
-                        <span class="font-bold text-sm">Fa</span>
-                    </button>
-                    <button class="piano-key w-12 h-32 md:w-16 md:h-40 flex flex-col justify-end items-center pb-2" onclick="playNote(392.00, 'Sol')">
-                        <span class="font-bold text-sm">Sol</span>
-                    </button>
-                    <button class="piano-key w-12 h-32 md:w-16 md:h-40 flex flex-col justify-end items-center pb-2" onclick="playNote(440.00, 'La')">
-                        <span class="font-bold text-sm">La</span>
-                    </button>
-                    <button class="piano-key w-12 h-32 md:w-16 md:h-40 flex flex-col justify-end items-center pb-2" onclick="playNote(493.88, 'Si')">
-                        <span class="font-bold text-sm">Si</span>
-                    </button>
-                    <button class="piano-key w-12 h-32 md:w-16 md:h-40 flex flex-col justify-end items-center pb-2" onclick="playNote(523.25, 'Do')">
-                        <span class="font-bold text-sm">Do</span>
-                    </button>
-                </div>
-                <p id="noteDisplay" class="text-center text-xl font-bold" style="color: var(--accent-blue);">Click a key to play!</p>
-            </div>
-
-            <!-- Pelog Notes -->
-            <div class="card p-6 mb-6">
-                <h3 class="text-2xl font-bold mb-4 title-font" style="color: var(--accent-green);">
-                    2. Pelog Notes
-                </h3>
-                <p class="mb-4">
-                    <strong>Pelog notes</strong> come from Indonesia. They sound unique and beautiful.
-                </p>
-                <div class="highlight-box mb-4">
-                    <p><strong>Notes:</strong> Do - Mi - Fa - Sol - Si</p>
-                    <p class="text-sm mt-2">We use these notes in traditional songs.</p>
-                </div>
-                <button class="btn-secondary" onclick="playPelog()">Listen to Pelog Scale</button>
-            </div>
-
-            <!-- Slendro Notes -->
-            <div class="card p-6">
-                <h3 class="text-2xl font-bold mb-4 title-font" style="color: var(--accent-purple);">
-                    3. Slendro Notes
-                </h3>
-                <p class="mb-4">
-                    <strong>Slendro notes</strong> also come from Indonesia. They have 5 notes.
-                </p>
-                <div class="highlight-box mb-4">
-                    <p><strong>Notes:</strong> Do - Re - Mi - Sol - La</p>
-                    <p class="text-sm mt-2">We use these notes in gamelan music.</p>
-                </div>
-                <button class="btn-secondary" onclick="playSlendro()">Listen to Slendro Scale</button>
-            </div>
-        </section>
-
-        <!-- Section 3: Tempo & Dynamics -->
-        <section id="tempo" class="content-section">
-            <div class="text-center mb-8">
-                <h2 class="text-3xl md:text-4xl font-bold title-font mb-4" style="color: var(--accent-orange);">
-                    Tempo and Dynamics
-                </h2>
-                <p class="text-lg">Music has speed and volume!</p>
-            </div>
-
-            <!-- Tempo -->
-            <div class="card p-6 mb-6">
-                <h3 class="text-2xl font-bold mb-4 title-font" style="color: var(--accent-blue);">
-                    What is Tempo?
-                </h3>
-                <p class="mb-6">
-                    <strong>Tempo</strong> is the speed of music. It tells us how fast or slow we play.
-                </p>
-
-                <div class="grid md:grid-cols-3 gap-4">
-                    <div class="tempo-btn text-center" onclick="playTempo('slow')">
-                        <div class="text-4xl mb-2">🐢</div>
-                        <h4 class="font-bold text-lg mb-2" style="color: var(--accent-blue);">Slow</h4>
-                        <p>The music plays slowly.</p>
-                    </div>
-                    <div class="tempo-btn text-center" onclick="playTempo('medium')">
-                        <div class="text-4xl mb-2">🚶</div>
-                        <h4 class="font-bold text-lg mb-2" style="color: var(--accent-green);">Medium</h4>
-                        <p>The music plays normally.</p>
-                    </div>
-                    <div class="tempo-btn text-center" onclick="playTempo('fast')">
-                        <div class="text-4xl mb-2">🐇</div>
-                        <h4 class="font-bold text-lg mb-2" style="color: var(--accent-orange);">Fast</h4>
-                        <p>The music plays quickly!</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Dynamics -->
-            <div class="card p-6">
-                <h3 class="text-2xl font-bold mb-4 title-font" style="color: var(--accent-pink);">
-                    What is Dynamics?
-                </h3>
-                <p class="mb-6">
-                    <strong>Dynamics</strong> is how loud or soft the music sounds.
-                </p>
-
-                <div class="grid md:grid-cols-2 gap-4">
-                    <div class="tempo-btn text-center" onclick="playDynamic('soft')">
-                        <div class="text-4xl mb-2">🤫</div>
-                        <h4 class="font-bold text-lg mb-2" style="color: var(--accent-purple);">Soft (Piano)</h4>
-                        <p>We play quietly.</p>
-                    </div>
-                    <div class="tempo-btn text-center" onclick="playDynamic('loud')">
-                        <div class="text-4xl mb-2">📢</div>
-                        <h4 class="font-bold text-lg mb-2" style="color: var(--accent-orange);">Loud (Forte)</h4>
-                        <p>We play strongly!</p>
-                    </div>
-                </div>
-
-                <div class="mt-6 p-4 rounded-xl" style="background: rgba(255,107,157,0.1);">
-                    <p class="text-center">
-                        <strong>Dynamics show feelings!</strong> Soft music feels calm. Loud music feels exciting!
-                    </p>
-                </div>
-            </div>
-        </section>
-
-        <!-- Section 4: Regional Songs -->
-        <section id="songs" class="content-section">
-            <div class="text-center mb-8">
-                <h2 class="text-3xl md:text-4xl font-bold title-font mb-4" style="color: var(--accent-orange);">
-                    Indonesian Folk Songs
-                </h2>
-                <p class="text-lg">Indonesia has many beautiful folk songs!</p>
-            </div>
-
-            <div class="grid md:grid-cols-2 gap-6 mb-8">
-                <!-- Sinanggar Tullo -->
-                <div class="song-card">
-                    <h3 class="text-xl font-bold mb-2 title-font" style="color: var(--accent-orange);">
-                        Sinanggar Tullo
-                    </h3>
-                    <p class="mb-2"><strong>Region:</strong> North Sumatera</p>
-                    <p class="mb-2"><strong>Language:</strong> Batak and Malay</p>
-                    <p class="mb-2"><strong>Tempo:</strong> Fast and happy</p>
-                    <p class="mb-2"><strong>Beat:</strong> 4 beats</p>
-                    <div class="highlight-box mt-4">
-                        <p class="text-sm">This song tells about a boy who follows his mother's advice.</p>
-                    </div>
-                </div>
-
-                <!-- Sajojo -->
-                <div class="song-card">
-                    <h3 class="text-xl font-bold mb-2 title-font" style="color: var(--accent-green);">
-                        Sajojo
-                    </h3>
-                    <p class="mb-2"><strong>Region:</strong> Papua</p>
-                    <p class="mb-2"><strong>Language:</strong> Moi Flabra tribe</p>
-                    <p class="mb-2"><strong>Tempo:</strong> Fast</p>
-                    <p class="mb-2"><strong>Beat:</strong> 4/4</p>
-                    <div class="highlight-box mt-4">
-                        <p class="text-sm">This song tells about a girl loved by her parents.</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- More Songs Table -->
-            <div class="card p-6">
-                <h3 class="text-2xl font-bold mb-4 title-font" style="color: var(--accent-blue);">
-                    More Folk Songs
-                </h3>
-                <div class="overflow-x-auto">
-                    <table class="w-full">
-                        <thead>
-                            <tr style="background: var(--bg-secondary);">
-                                <th class="p-3 text-left rounded-tl-lg">Song Title</th>
-                                <th class="p-3 text-left rounded-tr-lg">Region</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr class="border-b" style="border-color: var(--border-color);">
-                                <td class="p-3">Manuk Dadali</td>
-                                <td class="p-3">West Java</td>
-                            </tr>
-                            <tr class="border-b" style="border-color: var(--border-color);">
-                                <td class="p-3">Ampar-Ampar Pisang</td>
-                                <td class="p-3">South Kalimantan</td>
-                            </tr>
-                            <tr class="border-b" style="border-color: var(--border-color);">
-                                <td class="p-3">Cublak Cublak Suweng</td>
-                                <td class="p-3">Central Java</td>
-                            </tr>
-                            <tr class="border-b" style="border-color: var(--border-color);">
-                                <td class="p-3">Bubuy Bulan</td>
-                                <td class="p-3">West Java</td>
-                            </tr>
-                            <tr class="border-b" style="border-color: var(--border-color);">
-                                <td class="p-3">Yamko Rambe Yamko</td>
-                                <td class="p-3">Papua</td>
-                            </tr>
-                            <tr>
-                                <td class="p-3">Suwe Ora Jamu</td>
-                                <td class="p-3">Yogyakarta</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Time Signature -->
-            <div class="card p-6 mt-6">
-                <h3 class="text-2xl font-bold mb-4 title-font" style="color: var(--accent-purple);">
-                    Beat (Birama)
-                </h3>
-                <p class="mb-4"><strong>Beat</strong> is the counting in music. Each song has different beats.</p>
-                
-                <div class="grid md:grid-cols-3 gap-4">
-                    <div class="tempo-btn text-center">
-                        <h4 class="font-bold text-2xl mb-2" style="color: var(--accent-orange);">2/4</h4>
-                        <p>2 beats per measure</p>
-                        <p class="text-sm mt-2">Example: Helele Uala De Teang</p>
-                    </div>
-                    <div class="tempo-btn text-center">
-                        <h4 class="font-bold text-2xl mb-2" style="color: var(--accent-blue);">3/4</h4>
-                        <p>3 beats per measure</p>
-                        <p class="text-sm mt-2">Example: Burung Tantina</p>
-                    </div>
-                    <div class="tempo-btn text-center">
-                        <h4 class="font-bold text-2xl mb-2" style="color: var(--accent-green);">4/4</h4>
-                        <p>4 beats per measure</p>
-                        <p class="text-sm mt-2">Example: Yamko Rambe Yamko</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Section 5: Instruments -->
-        <section id="instruments" class="content-section">
-            <div class="text-center mb-8">
-                <h2 class="text-3xl md:text-4xl font-bold title-font mb-4" style="color: var(--accent-orange);">
-                    Musical Instruments
-                </h2>
-                <p class="text-lg">There are two types of instruments.</p>
-            </div>
-
-            <div class="grid md:grid-cols-2 gap-6 mb-8">
-                <!-- Melodic -->
-                <div class="instrument-card">
-                    <div class="text-center mb-4">
-                        <div class="w-20 h-20 rounded-full mx-auto flex items-center justify-center text-4xl" style="background: linear-gradient(135deg, var(--accent-yellow) 0%, var(--accent-orange) 100%);">
-                            🎹
-                        </div>
-                    </div>
-                    <h3 class="text-xl font-bold text-center mb-3 title-font" style="color: var(--accent-orange);">
-                        Melodic Instruments
-                    </h3>
-                    <p class="text-center mb-4">
-                        <strong>Melodic instruments</strong> play notes and melodies.
-                    </p>
-                    <ul class="space-y-2">
-                        <li class="flex items-center gap-2">
-                            <span style="color: var(--accent-orange);">●</span> Pianica (we blow and press)
-                        </li>
-                        <li class="flex items-center gap-2">
-                            <span style="color: var(--accent-orange);">●</span> Piano (we press keys)
-                        </li>
-                        <li class="flex items-center gap-2">
-                            <span style="color: var(--accent-orange);">●</span> Violin (we use a bow)
-                        </li>
-                        <li class="flex items-center gap-2">
-                            <span style="color: var(--accent-orange);">●</span> Recorder (we blow)
-                        </li>
-                    </ul>
-                </div>
-
-                <!-- Rhythmic -->
-                <div class="instrument-card">
-                    <div class="text-center mb-4">
-                        <div class="w-20 h-20 rounded-full mx-auto flex items-center justify-center text-4xl" style="background: linear-gradient(135deg, var(--accent-green) 0%, var(--accent-blue) 100%);">
-                            🥁
-                        </div>
-                    </div>
-                    <h3 class="text-xl font-bold text-center mb-3 title-font" style="color: var(--accent-blue);">
-                        Rhythmic Instruments
-                    </h3>
-                    <p class="text-center mb-4">
-                        <strong>Rhythmic instruments</strong> keep the beat.
-                    </p>
-                    <ul class="space-y-2">
-                        <li class="flex items-center gap-2">
-                            <span style="color: var(--accent-blue);">●</span> Drum (we hit it)
-                        </li>
-                        <li class="flex items-center gap-2">
-                            <span style="color: var(--accent-blue);">●</span> Tambourine (we shake it)
-                        </li>
-                        <li class="flex items-center gap-2">
-                            <span style="color: var(--accent-blue);">●</span> Gong (we hit it)
-                        </li>
-                        <li class="flex items-center gap-2">
-                            <span style="color: var(--accent-blue);">●</span> Tambur (from Bali)
-                        </li>
-                    </ul>
-                </div>
-            </div>
-
-            <!-- DIY Instruments -->
-            <div class="card p-6 mb-6">
-                <h3 class="text-2xl font-bold mb-4 title-font" style="color: var(--accent-pink);">
-                    Make Your Own Music!
-                </h3>
-                <p class="mb-6">We can make music with simple things!</p>
-                
-                <div class="grid md:grid-cols-3 gap-4">
-                    <div class="tempo-btn text-center">
-                        <div class="text-4xl mb-2">👏</div>
-                        <h4 class="font-bold mb-2">Clapping</h4>
-                        <p>Clap your hands! It makes "pak pak pak" sound.</p>
-                    </div>
-                    <div class="tempo-btn text-center">
-                        <div class="text-4xl mb-2">🫙</div>
-                        <h4 class="font-bold mb-2">Bottle</h4>
-                        <p>Hit a bottle with a pencil! It makes a ringing sound.</p>
-                    </div>
-                    <div class="tempo-btn text-center">
-                        <div class="text-4xl mb-2">🥣</div>
-                        <h4 class="font-bold mb-2">Bowl</h4>
-                        <p>Hit a bowl! It makes a "dung dung dung" sound.</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Ensemble -->
-            <div class="card p-6">
-                <h3 class="text-2xl font-bold mb-4 title-font" style="color: var(--accent-purple);">
-                    Music Ensemble
-                </h3>
-                <p class="mb-4">
-                    <strong>Ensemble</strong> means playing music together in a group. We use different instruments together.
-                </p>
-                
-                <div class="grid md:grid-cols-3 gap-4">
-                    <div class="highlight-box">
-                        <h4 class="font-bold mb-2" style="color: var(--accent-orange);">Melodic Group</h4>
-                        <p class="text-sm">They play the melody. Example: piano, recorder, violin.</p>
-                    </div>
-                    <div class="highlight-box">
-                        <h4 class="font-bold mb-2" style="color: var(--accent-blue);">Rhythmic Group</h4>
-                        <p class="text-sm">They keep the beat. Example: drum, tambourine, gong.</p>
-                    </div>
-                    <div class="highlight-box">
-                        <h4 class="font-bold mb-2" style="color: var(--accent-green);">Harmonic Group</h4>
-                        <p class="text-sm">They play chords. Example: guitar, keyboard.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Section 6: Quiz -->
-        <section id="quiz" class="content-section">
-            <div class="text-center mb-8">
-                <h2 class="text-3xl md:text-4xl font-bold title-font mb-4" style="color: var(--accent-orange);">
-                    Test Your Knowledge!
-                </h2>
-                <p class="text-lg">Ready to show what you've learned about music?</p>
-            </div>
-
-            <div class="card p-8 text-center max-w-lg mx-auto">
-                <div class="text-6xl mb-6">📝</div>
-                <h3 class="text-2xl font-bold mb-4 title-font" style="color: var(--accent-blue);">
-                    Music Quiz
-                </h3>
-                <p class="mb-8 text-lg" style="color: var(--text-light);">
-                    Let's see how much you remember about notes, rhythm, and instruments!
-                </p>
-                <a href="https://suuf24.github.io/Art-Ensamble/test/multiple.html" class="btn-primary">
-                    Start Quiz
-                </a>
-            </div>
-        </section>
-
-    </main>
-
-    <!-- Footer -->
-    <footer class="py-8 px-4 text-center" style="background: var(--bg-secondary);">
-        <p class="font-semibold">Let's Make Music Together!</p>
-        <p class="text-sm mt-2" style="color: var(--text-light);">Music brings joy to everyone.</p>
-    </footer>
+    </div>
 
     <script>
-        // Initialize Audio Context
-        let audioContext = null;
+        /**
+         * Music Quiz - English for Kids (Grade 2)
+         * Present Simple Tense Focus
+         */
 
-        function initAudio() {
-            if (!audioContext) {
-                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const masterData = [
+            { q: "Music expresses our ______.", a: ["feelings", "toys", "food", "books"], correct: "feelings" },
+            { q: "A ______ is a sound in music.", a: ["note", "ball", "car", "tree"], correct: "note" },
+            { q: "______ is a repeating pattern of sounds.", a: ["Rhythm", "Color", "Number", "Letter"], correct: "Rhythm" },
+            { q: "Melody is a line of ______ and low notes.", a: ["high", "big", "small", "long"], correct: "high" },
+            { q: "Major notes sound ______ and bright.", a: ["happy", "sad", "angry", "sleepy"], correct: "happy" },
+            { q: "Minor notes sound ______ and serious.", a: ["sad", "happy", "funny", "loud"], correct: "sad" },
+            { q: "Slendro notes have ______ notes.", a: ["5", "7", "3", "10"], correct: "5" },
+            { q: "Tempo is the ______ of the music.", a: ["speed", "color", "name", "size"], correct: "speed" },
+            { q: "Dynamics is how ______ or soft the music is.", a: ["loud", "fast", "slow", "tall"], correct: "loud" },
+            { q: "We play music together in an ______.", a: ["ensemble", "office", "garden", "pocket"], correct: "ensemble" },
+            { q: "A pianica is a ______ instrument.", a: ["melodic", "rhythmic", "heavy", "empty"], correct: "melodic" },
+            { q: "A drum keeps the ______.", a: ["beat", "water", "door", "bag"], correct: "beat" },
+            { q: "Sinanggar Tullo is from North ______.", a: ["Sumatera", "Java", "Bali", "Papua"], correct: "Sumatera" },
+            { q: "Sajojo is a song from ______.", a: ["Papua", "Java", "Sumatera", "Bali"], correct: "Papua" },
+            { q: "Fast tempo means the music is ______.", a: ["quick", "slow", "quiet", "sleepy"], correct: "quick" },
+        ];
+
+        class QuizApp {
+            constructor() {
+                this.dataset = [];
+                this.currentQuestionIndex = 0;
+                this.userAnswers = {};
+
+                // DOM Elements
+                this.quizArea = document.getElementById('quiz-area');
+                this.controls = document.getElementById('game-controls');
+                this.progressBar = document.getElementById('progress-bar');
+                this.resultTrigger = document.getElementById('result-trigger');
+                this.resultOverlay = document.getElementById('result-overlay');
+                this.reviewModal = document.getElementById('review-modal');
+                this.header = document.getElementById('game-header');
+
+                // Keyboard Listener
+                document.addEventListener('keydown', (e) => this.handleInput(e));
+
+                this.init();
             }
-        }
 
-        // Play a note
-        function playNote(frequency, name) {
-            initAudio();
-            
-            const oscillator = audioContext.createOscillator();
-            const gainNode = audioContext.createGain();
-            
-            oscillator.connect(gainNode);
-            gainNode.connect(audioContext.destination);
-            
-            oscillator.type = 'sine';
-            oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
-            
-            gainNode.gain.setValueAtTime(0.5, audioContext.currentTime);
-            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.8);
-            
-            oscillator.start(audioContext.currentTime);
-            oscillator.stop(audioContext.currentTime + 0.8);
-            
-            document.getElementById('noteDisplay').textContent = 'Now playing: ' + name;
-        }
-
-        // Play Pelog scale
-        function playPelog() {
-            initAudio();
-            const pelogNotes = [
-                { freq: 261.63, name: 'Do' },
-                { freq: 329.63, name: 'Mi' },
-                { freq: 349.23, name: 'Fa' },
-                { freq: 392.00, name: 'Sol' },
-                { freq: 493.88, name: 'Si' }
-            ];
-            
-            let i = 0;
-            document.getElementById('noteDisplay').textContent = 'Playing Pelog scale...';
-            
-            function playNext() {
-                if (i < pelogNotes.length) {
-                    playNote(pelogNotes[i].freq, pelogNotes[i].name);
-                    i++;
-                    setTimeout(playNext, 500);
+            handleInput(e) {
+                if (this.quizArea.style.display === 'none') return;
+                const key = e.key;
+                if (key >= '1' && key <= '4') {
+                    const idx = parseInt(key) - 1;
+                    const optionsCount = this.dataset[this.currentQuestionIndex].options.length;
+                    if (idx < optionsCount) {
+                        this.selectOption(idx);
+                    }
+                } else if (key === 'Enter') {
+                    e.preventDefault();
+                    this.nextQuestion();
                 }
             }
-            playNext();
-        }
 
-        // Play Slendro scale
-        function playSlendro() {
-            initAudio();
-            const slendroNotes = [
-                { freq: 261.63, name: 'Do' },
-                { freq: 293.66, name: 'Re' },
-                { freq: 329.63, name: 'Mi' },
-                { freq: 392.00, name: 'Sol' },
-                { freq: 440.00, name: 'La' }
-            ];
-            
-            let i = 0;
-            document.getElementById('noteDisplay').textContent = 'Playing Slendro scale...';
-            
-            function playNext() {
-                if (i < slendroNotes.length) {
-                    playNote(slendroNotes[i].freq, slendroNotes[i].name);
-                    i++;
-                    setTimeout(playNext, 500);
+            init() {
+                this.currentQuestionIndex = 0;
+                this.userAnswers = {};
+                this.dataset = this.randomizeQuestions(masterData, 10);
+
+                this.resultTrigger.style.display = 'none';
+                this.resultOverlay.style.display = 'none';
+                this.reviewModal.style.display = 'none';
+                this.header.style.display = 'block';
+                this.quizArea.style.display = 'block';
+                this.controls.style.display = 'flex';
+                document.getElementById('game-nav').style.display = 'grid';
+
+                this.renderNavGrid();
+                this.renderQuestion();
+            }
+
+            randomizeQuestions(sourceData, count) {
+                let shuffled = [...sourceData].sort(() => 0.5 - Math.random());
+                let selected = shuffled.slice(0, count);
+                return selected.map(item => {
+                    const options = [...item.a];
+                    for (let i = options.length - 1; i > 0; i--) {
+                        const j = Math.floor(Math.random() * (i + 1));
+                        [options[i], options[j]] = [options[j], options[i]];
+                    }
+                    return {
+                        question: item.q,
+                        options: options,
+                        correct: item.correct
+                    };
+                });
+            }
+
+            renderQuestion() {
+                const qData = this.dataset[this.currentQuestionIndex];
+                const progress = ((this.currentQuestionIndex + 1) / this.dataset.length) * 100;
+                this.progressBar.style.width = `${progress}%`;
+
+                this.quizArea.innerHTML = `
+                    <div class="question-card active">
+                        <div class="question-text">${qData.question}</div>
+                        <div class="options-grid">
+                            ${qData.options.map((opt, idx) => `
+                                <button class="option-btn" onclick="app.selectOption(${idx})" id="opt-${idx}">
+                                    ${opt}
+                                </button>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+
+                this.updateNavGrid();
+                this.renderControls();
+
+                const savedAns = this.userAnswers[this.currentQuestionIndex];
+                if (savedAns) {
+                    const savedIdx = qData.options.indexOf(savedAns);
+                    if (savedIdx !== -1) {
+                        this.highlightOption(savedIdx);
+                    }
                 }
             }
-            playNext();
-        }
 
-        // Play tempo demonstration
-        function playTempo(speed) {
-            initAudio();
-            
-            const speeds = {
-                slow: 600,
-                medium: 400,
-                fast: 200
-            };
-            
-            const interval = speeds[speed];
-            let count = 0;
-            const maxCount = 4;
-            
-            document.querySelectorAll('.tempo-btn').forEach(btn => btn.classList.remove('active'));
-            event.currentTarget.classList.add('active');
-            
-            function playBeat() {
-                if (count < maxCount) {
-                    const oscillator = audioContext.createOscillator();
-                    const gainNode = audioContext.createGain();
-                    
-                    oscillator.connect(gainNode);
-                    gainNode.connect(audioContext.destination);
-                    
-                    oscillator.type = 'square';
-                    oscillator.frequency.setValueAtTime(440, audioContext.currentTime);
-                    
-                    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
-                    
-                    oscillator.start(audioContext.currentTime);
-                    oscillator.stop(audioContext.currentTime + 0.1);
-                    
-                    count++;
-                    setTimeout(playBeat, interval);
+            renderControls() {
+                const isLast = this.currentQuestionIndex === this.dataset.length - 1;
+                const answered = this.userAnswers[this.currentQuestionIndex] !== undefined;
+
+                this.controls.innerHTML = `
+                    <button class="btn" id="next-btn" onclick="app.nextQuestion()">
+                        ${isLast ? 'Finish & See Score' : (answered ? 'Next' : 'Skip')} 
+                    </button>
+                `;
+            }
+
+            selectOption(idx) {
+                const val = this.dataset[this.currentQuestionIndex].options[idx];
+                if (this.userAnswers[this.currentQuestionIndex] === val) {
+                    delete this.userAnswers[this.currentQuestionIndex];
+                    const btn = document.getElementById(`opt-${idx}`);
+                    if (btn) btn.classList.remove('selected');
+                } else {
+                    this.userAnswers[this.currentQuestionIndex] = val;
+                    this.highlightOption(idx);
+                }
+                this.updateNavGrid();
+                this.renderControls();
+            }
+
+            highlightOption(idx) {
+                const buttons = document.querySelectorAll('.option-btn');
+                buttons.forEach(btn => btn.classList.remove('selected'));
+                const selectedBtn = document.getElementById(`opt-${idx}`);
+                if (selectedBtn) {
+                    selectedBtn.classList.add('selected');
                 }
             }
-            playBeat();
-        }
 
-        // Play dynamics demonstration
-        function playDynamic(type) {
-            initAudio();
-            
-            const volumes = {
-                soft: 0.2,
-                loud: 0.8
-            };
-            
-            const volume = volumes[type];
-            
-            document.querySelectorAll('.tempo-btn').forEach(btn => btn.classList.remove('active'));
-            event.currentTarget.classList.add('active');
-            
-            const oscillator = audioContext.createOscillator();
-            const gainNode = audioContext.createGain();
-            
-            oscillator.connect(gainNode);
-            gainNode.connect(audioContext.destination);
-            
-            oscillator.type = 'sine';
-            oscillator.frequency.setValueAtTime(440, audioContext.currentTime);
-            
-            gainNode.gain.setValueAtTime(volume, audioContext.currentTime);
-            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 1.5);
-            
-            oscillator.start(audioContext.currentTime);
-            oscillator.stop(audioContext.currentTime + 1.5);
-        }
-
-        // Play rhythm game
-        function playRhythm() {
-            initAudio();
-            
-            const claps = ['clap1', 'clap2', 'clap3', 'clap4'];
-            let i = 0;
-            
-            function clap() {
-                if (i < claps.length) {
-                    const element = document.getElementById(claps[i]);
-                    element.style.transform = 'scale(1.3)';
-                    element.style.transition = 'transform 0.1s';
-                    
-                    const oscillator = audioContext.createOscillator();
-                    const gainNode = audioContext.createGain();
-                    
-                    oscillator.connect(gainNode);
-                    gainNode.connect(audioContext.destination);
-                    
-                    oscillator.type = 'square';
-                    oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
-                    
-                    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
-                    
-                    oscillator.start(audioContext.currentTime);
-                    oscillator.stop(audioContext.currentTime + 0.1);
-                    
-                    setTimeout(() => {
-                        element.style.transform = 'scale(1)';
-                    }, 200);
-                    
-                    i++;
-                    setTimeout(clap, 400);
+            nextQuestion() {
+                if (this.currentQuestionIndex < this.dataset.length - 1) {
+                    this.currentQuestionIndex++;
+                    this.renderQuestion();
+                } else {
+                    this.showResults();
                 }
             }
-            clap();
+
+            renderNavGrid() {
+                const navContainer = document.getElementById('game-nav');
+                navContainer.innerHTML = '';
+                this.dataset.forEach((_, index) => {
+                    const box = document.createElement('div');
+                    box.className = 'nav-box';
+                    box.textContent = index + 1;
+                    box.onclick = () => app.jumpToQuestion(index);
+                    box.id = `nav-box-${index}`;
+                    navContainer.appendChild(box);
+                });
+            }
+
+            updateNavGrid() {
+                this.dataset.forEach((_, index) => {
+                    const box = document.getElementById(`nav-box-${index}`);
+                    if (!box) return;
+                    box.className = 'nav-box';
+                    if (this.userAnswers[index] !== undefined) {
+                        box.classList.add('answered');
+                    }
+                    if (index === this.currentQuestionIndex) {
+                        box.classList.add('active');
+                    }
+                });
+            }
+
+            jumpToQuestion(index) {
+                this.currentQuestionIndex = index;
+                this.renderQuestion();
+            }
+
+            showResults() {
+                let score = 0;
+                this.lastReviewHTML = '';
+                this.dataset.forEach((q, idx) => {
+                    const userAns = this.userAnswers[idx];
+                    const isCorrect = userAns === q.correct;
+                    if (isCorrect) score++;
+
+                    this.lastReviewHTML += `
+                        <div class="review-item ${isCorrect ? 'correct' : 'wrong'}">
+                            <div class="review-q">${idx + 1}. ${q.question}</div>
+                            <div class="review-ans">
+                                Your answer: <span class="${isCorrect ? 'text-correct' : 'text-wrong'}">${userAns || '-'}</span>
+                                ${!isCorrect ? `<br>Correct answer: <span class="text-correct">${q.correct}</span>` : ''}
+                            </div>
+                        </div>
+                    `;
+                });
+
+                document.getElementById('final-score').textContent = score;
+
+                const detailBtn = document.createElement('button');
+                detailBtn.className = 'btn';
+                detailBtn.style.marginTop = '20px';
+                detailBtn.style.background = 'linear-gradient(135deg, var(--accent-blue), var(--accent-green))';
+                detailBtn.textContent = 'See Answer Details';
+                detailBtn.onclick = () => { app.openReview(); };
+
+                this.resultTrigger.innerHTML = '';
+
+                const percentage = (score / this.dataset.length) * 100;
+                let msg = "";
+                if (percentage === 100) msg = "Perfect! You are a Music Star!";
+                else if (percentage >= 80) msg = "Great job! Almost perfect!";
+                else if (percentage >= 50) msg = "Good try! Keep learning!";
+                else msg = "Don't give up! Practice more!";
+                document.getElementById('status-message').textContent = msg;
+
+                let detailBtnContainer = document.getElementById('detail-btn-container');
+                if (!detailBtnContainer) {
+                    detailBtnContainer = document.createElement('div');
+                    detailBtnContainer.id = 'detail-btn-container';
+                    document.getElementById('status-message').after(detailBtnContainer);
+                }
+                detailBtnContainer.innerHTML = '';
+                detailBtnContainer.appendChild(detailBtn);
+
+                this.header.style.display = 'none';
+                this.quizArea.style.display = 'none';
+                this.controls.style.display = 'none';
+                document.getElementById('game-nav').style.display = 'none';
+                this.resultTrigger.style.display = 'none';
+
+                this.resultOverlay.style.display = 'block';
+            }
+
+            openReview() {
+                const reviewContent = document.getElementById('review-list-content');
+                reviewContent.innerHTML = this.lastReviewHTML || '<p>No review data.</p>';
+                this.reviewModal.style.display = 'block';
+            }
+
+            closeReview() {
+                this.reviewModal.style.display = 'none';
+            }
         }
 
-        // Section Navigation
-        function showSection(sectionId) {
-            document.querySelectorAll('.content-section').forEach(section => {
-                section.classList.remove('active');
-            });
-            
-            document.querySelectorAll('.nav-tab').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            
-            document.getElementById(sectionId).classList.add('active');
-            event.currentTarget.classList.add('active');
-            
-            // Reset animations
-            const section = document.getElementById(sectionId);
-            section.querySelectorAll('.section-enter').forEach(el => {
-                el.style.animation = 'none';
-                el.offsetHeight; // Trigger reflow
-                el.style.animation = null;
-            });
-        }
+        const app = new QuizApp();
     </script>
 </body>
+
 </html>
