@@ -133,10 +133,15 @@
             background: linear-gradient(135deg, var(--accent-orange) 0%, var(--accent-yellow) 100%);
             color: white;
             border-radius: 50px;
-            padding: 12px 28px;
+            padding: 14px 32px;
             font-weight: 700;
             transition: all 0.3s ease;
             box-shadow: 0 4px 16px rgba(255, 123, 84, 0.3);
+            display: inline-block;
+            text-decoration: none;
+            font-size: 1.2rem;
+            border: none;
+            cursor: pointer;
         }
 
         .btn-primary:hover {
@@ -151,6 +156,8 @@
             padding: 10px 20px;
             font-weight: 600;
             transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
         }
 
         .btn-secondary:hover {
@@ -228,63 +235,6 @@
         .song-card:hover {
             border-color: var(--accent-pink);
             transform: scale(1.02);
-        }
-
-        .quiz-option {
-            background: var(--card-bg);
-            border: 3px solid var(--border-color);
-            border-radius: 16px;
-            padding: 16px 24px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-align: left;
-        }
-
-        .quiz-option:hover {
-            border-color: var(--accent-blue);
-            background: #F8FCFF;
-        }
-
-        .quiz-option.correct {
-            border-color: var(--accent-green);
-            background: rgba(125, 207, 182, 0.2);
-        }
-
-        .quiz-option.wrong {
-            border-color: #FF6B6B;
-            background: rgba(255, 107, 107, 0.2);
-        }
-
-        .progress-bar {
-            background: var(--border-color);
-            border-radius: 50px;
-            height: 12px;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            background: linear-gradient(90deg, var(--accent-green) 0%, var(--accent-blue) 100%);
-            height: 100%;
-            border-radius: 50px;
-            transition: width 0.5s ease;
-        }
-
-        .emoji-float {
-            animation: emojiPop 0.5s ease forwards;
-        }
-
-        @keyframes emojiPop {
-            0% { transform: scale(0); opacity: 0; }
-            50% { transform: scale(1.3); }
-            100% { transform: scale(1); opacity: 1; }
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-            *, *::before, *::after {
-                animation-duration: 0.01ms !important;
-                animation-iteration-count: 1 !important;
-                transition-duration: 0.01ms !important;
-            }
         }
 
         .visual-wave {
@@ -851,41 +801,22 @@
         <section id="quiz" class="content-section">
             <div class="text-center mb-8">
                 <h2 class="text-3xl md:text-4xl font-bold title-font mb-4" style="color: var(--accent-orange);">
-                    Let's Practice!
+                    Test Your Knowledge!
                 </h2>
-                <p class="text-lg">Answer the questions to test your understanding!</p>
+                <p class="text-lg">Ready to show what you've learned about music?</p>
             </div>
 
-            <div class="card p-6">
-                <!-- Progress -->
-                <div class="mb-6">
-                    <div class="flex justify-between mb-2">
-                        <span class="font-bold">Progress</span>
-                        <span id="progressText">0 / 5</span>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" id="progressBar" style="width: 0%;"></div>
-                    </div>
-                </div>
-
-                <!-- Question -->
-                <div id="quizContainer">
-                    <h3 class="text-xl font-bold mb-4" id="questionText"></h3>
-                    <div class="space-y-3" id="optionsContainer"></div>
-                </div>
-
-                <!-- Result -->
-                <div id="resultContainer" class="hidden text-center">
-                    <div class="text-6xl mb-4" id="resultEmoji">🎉</div>
-                    <h3 class="text-2xl font-bold mb-2 title-font" id="resultTitle">Great Job!</h3>
-                    <p class="text-lg mb-4" id="resultText"></p>
-                    <button class="btn-primary" onclick="restartQuiz()">Try Again</button>
-                </div>
-
-                <!-- Next Button -->
-                <div class="mt-6 text-center">
-                    <button class="btn-primary hidden" id="nextBtn" onclick="nextQuestion()">Next Question</button>
-                </div>
+            <div class="card p-8 text-center max-w-lg mx-auto">
+                <div class="text-6xl mb-6">📝</div>
+                <h3 class="text-2xl font-bold mb-4 title-font" style="color: var(--accent-blue);">
+                    Music Quiz
+                </h3>
+                <p class="mb-8 text-lg" style="color: var(--text-light);">
+                    Let's see how much you remember about notes, rhythm, and instruments!
+                </p>
+                <a href="/test/multiple.html" class="btn-primary">
+                    Start Quiz
+                </a>
             </div>
         </section>
 
@@ -1108,161 +1039,6 @@
                 el.style.animation = null;
             });
         }
-
-        // Quiz Data
-        const quizData = [
-            {
-                question: "What do we use to express our feelings through music?",
-                options: ["Words", "Music", "Pictures", "Dance"],
-                correct: 1
-            },
-            {
-                question: "What are the three main elements of music?",
-                options: ["Drum, piano, guitar", "Notes, rhythm, melody", "Fast, slow, medium", "Loud, soft, quiet"],
-                correct: 1
-            },
-            {
-                question: "What is tempo?",
-                options: ["The volume of music", "The speed of music", "The notes in music", "The instruments"],
-                correct: 1
-            },
-            {
-                question: "Which notes sound happy and bright?",
-                options: ["Minor notes", "Pelog notes", "Slendro notes", "Major notes"],
-                correct: 3
-            },
-            {
-                question: "What is an ensemble?",
-                options: ["One person singing", "Playing music alone", "Playing music in a group", "A type of instrument"],
-                correct: 2
-            }
-        ];
-
-        let currentQuestion = 0;
-        let score = 0;
-        let answered = false;
-
-        function loadQuestion() {
-            answered = false;
-            const data = quizData[currentQuestion];
-            
-            document.getElementById('questionText').textContent = 
-                `${currentQuestion + 1}. ${data.question}`;
-            
-            const optionsContainer = document.getElementById('optionsContainer');
-            optionsContainer.innerHTML = '';
-            
-            data.options.forEach((option, index) => {
-                const button = document.createElement('button');
-                button.className = 'quiz-option w-full';
-                button.textContent = option;
-                button.onclick = () => checkAnswer(index);
-                optionsContainer.appendChild(button);
-            });
-            
-            document.getElementById('nextBtn').classList.add('hidden');
-            document.getElementById('progressText').textContent = 
-                `${currentQuestion} / ${quizData.length}`;
-            document.getElementById('progressBar').style.width = 
-                `${(currentQuestion / quizData.length) * 100}%`;
-        }
-
-        function checkAnswer(index) {
-            if (answered) return;
-            answered = true;
-            
-            const options = document.querySelectorAll('.quiz-option');
-            const correct = quizData[currentQuestion].correct;
-            
-            options.forEach((opt, i) => {
-                if (i === correct) {
-                    opt.classList.add('correct');
-                } else if (i === index && i !== correct) {
-                    opt.classList.add('wrong');
-                }
-            });
-            
-            if (index === correct) {
-                score++;
-            }
-            
-            document.getElementById('nextBtn').classList.remove('hidden');
-            
-            if (currentQuestion === quizData.length - 1) {
-                document.getElementById('nextBtn').textContent = 'See Results';
-            }
-        }
-
-        function nextQuestion() {
-            currentQuestion++;
-            
-            if (currentQuestion >= quizData.length) {
-                showResults();
-            } else {
-                loadQuestion();
-            }
-        }
-
-        function showResults() {
-            document.getElementById('quizContainer').classList.add('hidden');
-            document.getElementById('resultContainer').classList.remove('hidden');
-            document.getElementById('nextBtn').classList.add('hidden');
-            
-            const percentage = (score / quizData.length) * 100;
-            
-            if (percentage >= 80) {
-                document.getElementById('resultEmoji').textContent = '🌟';
-                document.getElementById('resultTitle').textContent = 'Excellent!';
-                document.getElementById('resultText').textContent = 
-                    `You got ${score} out of ${quizData.length}! You are a music star!`;
-            } else if (percentage >= 60) {
-                document.getElementById('resultEmoji').textContent = '😊';
-                document.getElementById('resultTitle').textContent = 'Good Job!';
-                document.getElementById('resultText').textContent = 
-                    `You got ${score} out of ${quizData.length}! Keep learning!`;
-            } else {
-                document.getElementById('resultEmoji').textContent = '💪';
-                document.getElementById('resultTitle').textContent = 'Keep Trying!';
-                document.getElementById('resultText').textContent = 
-                    `You got ${score} out of ${quizData.length}! Practice more and try again!`;
-            }
-            
-            document.getElementById('progressBar').style.width = '100%';
-            document.getElementById('progressText').textContent = 
-                `${quizData.length} / ${quizData.length}`;
-        }
-
-        function restartQuiz() {
-            currentQuestion = 0;
-            score = 0;
-            document.getElementById('quizContainer').classList.remove('hidden');
-            document.getElementById('resultContainer').classList.add('hidden');
-            document.getElementById('nextBtn').textContent = 'Next Question';
-            loadQuestion();
-        }
-
-        // Initialize quiz on page load
-        document.addEventListener('DOMContentLoaded', () => {
-            loadQuestion();
-        });
-
-        // Intersection Observer for scroll animations
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('section-enter');
-                }
-            });
-        }, observerOptions);
-
-        document.querySelectorAll('.card').forEach(card => {
-            observer.observe(card);
-        });
     </script>
 </body>
 </html>
